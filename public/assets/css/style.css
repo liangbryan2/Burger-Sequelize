@@ -1,0 +1,35 @@
+.header {
+    text-align: center;
+    color: white;
+}
+
+#burgerForm {
+    text-align: center;
+    margin-top: 10px;
+}
+
+html,body {
+    height: 100vh;
+    color: white;
+}
+
+.h2 {
+    color: white;
+}
+
+body {
+    background-image: url("../img/bobby-rodriguezz-1043119-unsplash.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: black;
+}
+
+.uk-card {
+    color: white;
+    background-color: rgba(1, 1, 1, 0);
+}
+
+.padding-right {
+    padding-right: 30px;
+}

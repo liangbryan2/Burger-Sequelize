@@ -1,0 +1,70 @@
+<div class="uk-align-center">
+    <h1 class="uk-heading-hero header">Burgers</h1>
+</div>
+
+<div class="uk-child-width-expand@s uk-text-center" uk-grid>
+    <div class="padding-right">
+        <div class="uk-card uk-card-body">
+
+            <h2 class="h2">Not Eaten</h2>
+
+            {{#each burgers}}
+            {{#unless this.devoured}}
+            <p>
+                {{this.burger_name}}
+                <button class="eat uk-button uk-button-danger" data-id="{{this.id}}">Eat</button>
+            </p>
+            {{/unless}}
+            {{/each}}
+        </div>
+    </div>
+    <div class="padding-right">
+        <div class="uk-card uk-card-body">
+            <h2 class="h2">Devoured</h2>
+            {{#each burgers}}
+            {{#if this.devoured}}
+            <p>{{this.burger_name}}</p>
+            {{/if}}
+            {{/each}}
+        </div>
+    </div>
+</div>
+<div>
+    <form id="burgerForm">
+        <input id="newBurger" class="uk-input uk-width-2-5" type="text" placeholder="Add a burger">
+        <button id="newBtn" class="uk-button uk-button-secondary">Add</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $("#newBtn").on("click", function (e) {
+        e.preventDefault();
+        if (!$("#newBurger").val().trim()) {
+            return console.log("empty name");
+        }
+        var burger = {
+            name: $("#newBurger").val().trim()
+        }
+
+        $.ajax("/api/burgers", {
+            type: "POST",
+            data: burger
+        }).then(function () {
+            console.log("added new burger");
+            location.reload();
+        })
+    });
+    $(".eat").on("click", function () {
+        var id = $(this).data("id");
+        var burger = {
+            devoured: true
+        }
+        $.ajax("/api/burgers/" + id, {
+            type: "PUT",
+            data: burger
+        }).then(function () {
+            console.log("ate burger", id);
+            location.reload();
+        })
+    });
+</script>
