@@ -2,7 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 require('dotenv').config();
 var PORT = process.env.PORT || 3000;
-
+var db = require("./models/");
 var app = express();
 
 // Serve static content for the app from the "public" directory in the application directory.
