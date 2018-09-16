@@ -30,6 +30,16 @@ body {
     background-color: rgba(1, 1, 1, 0);
 }
 
+.uk-card-body {
+    overflow: scroll;
+    max-height: 60vh;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
 .padding-right {
     padding-right: 30px;
 }

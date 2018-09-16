@@ -3,7 +3,8 @@
 </div>
 
 <div class="uk-child-width-expand@s uk-text-center" uk-grid>
-    <div class="padding-right">
+    <div class="uk-width-1-6@m"></div>
+    <div class="padding-right uk-width-2-5@m">
         <div class="uk-card uk-card-body">
 
             <h2 class="h2">Not Eaten</h2>
@@ -12,18 +13,19 @@
             {{#unless this.devoured}}
             <p>
                 {{this.burger_name}}
+                <input id="person" class="uk-input uk-form-width-small uk-form-small" type="text" placeholder="Who's eating?">
                 <button class="eat uk-button uk-button-danger" data-id="{{this.id}}">Eat</button>
             </p>
             {{/unless}}
             {{/each}}
         </div>
     </div>
-    <div class="padding-right">
+    <div class="padding-right uk-width-1-5@m">
         <div class="uk-card uk-card-body">
             <h2 class="h2">Devoured</h2>
             {{#each burgers}}
             {{#if this.devoured}}
-            <p>{{this.burger_name}}</p>
+            <p>{{this.burger_name}} (Eaten by {{this.Person.name}})</p>
             {{/if}}
             {{/each}}
         </div>
@@ -56,15 +58,25 @@
     });
     $(".eat").on("click", function () {
         var id = $(this).data("id");
-        var burger = {
-            devoured: true
+        var newPerson = $("#person").val().trim();
+        var person = {
+            name: newPerson
         }
-        $.ajax("/api/burgers/" + id, {
+        $.ajax("/api/people", {
             type: "PUT",
-            data: burger
-        }).then(function () {
-            console.log("ate burger", id);
-            location.reload();
+            data: person
+        }).then(function (result) {
+            var burger = {
+                devoured: true,
+                PersonId: result.id
+            }
+            $.ajax("/api/burgers/" + id, {
+                type: "PUT",
+                data: burger
+            }).then(function () {
+                console.log("ate burger", id);
+                location.reload();
+            })
         })
     });
 </script>
