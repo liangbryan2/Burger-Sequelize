@@ -1,7 +1,7 @@
 # Burger Devourer
 Node Express Handlebars Burger App
 
-![index](/public/assets/img/eaten.png)
+![index](https://raw.githubusercontent.com/liangbryan2/Burger-Sequelize/master/public/assets/img/eaten.PNG)
 
 ## Getting Started
 [Burgers](https://sequelizeburgers2.herokuapp.com/)
