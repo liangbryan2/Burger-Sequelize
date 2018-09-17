@@ -6,8 +6,8 @@ var db = require('../models');
 
 router.get("/", function (req, res) {
     db.Burger.findAll({
-        include: [db.Person]
-    })
+            include: [db.Person]
+        })
         .then(function (data) {
             var burgerObj = {
                 burgers: data
@@ -39,7 +39,7 @@ router.put("/api/burgers/:id", function (req, res) {
 router.put("/api/people", function (req, res) {
     db.Person.create({
         name: req.body.name
-    }).then(function(result) {
+    }).then(function (result) {
         res.json(result);
     })
 })

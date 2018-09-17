@@ -1,17 +1,18 @@
 # Burger Devourer
 Node Express Handlebars Burger App
 
-![index](/public/assets/img/index.png)
+![index](/public/assets/img/eaten.png)
 
 ## Getting Started
-[Burgers](https://burgereater2.herokuapp.com/)
+[Burgers](https://sequelizeburgers2.herokuapp.com/)
 
 This Burger indulging website is built with
 * [Node.js](https://nodejs.org/en/) 
 * [express](https://www.npmjs.com/package/express)
 * [express-handlebars](https://www.npmjs.com/package/express-handlebars)
 * [body-parser](https://www.npmjs.com/package/body-parser)
-* [mysql](https://www.npmjs.com/package/mysql)
+* [mysql2](https://www.npmjs.com/package/mysql2)
+* [sequelize](https://www.npmjs.com/package/sequelize)
 ### As well as your usual website technologies:
 * HTML
 * CSS / [UI Kit](https://getuikit.com/)
@@ -22,6 +23,7 @@ Using Burger Devourer is really straight forward.
 * Type in the name of the burger you want to eat. 
 Then click on the Add button.
 * It will show up in the Not Eaten portion of the page. 
+* Enter the name of the person eating the burger.
 * Click EAT next to the burger you want to eat. 
 * It will then show up in the Devourerd section of the page.
 
@@ -36,37 +38,56 @@ This is an example of how I used handlebars. The syntax requires us to use two c
     {{#unless this.devoured}}
         <p>
             {{this.burger_name}}
-        <button class="eat uk-button uk-button-danger" data-id="{{this.id}}">Eat</button>
+            <input id="person" class="uk-input uk-form-width-small uk-form-small" type="text"
+            placeholder="Who's eating?">
+            <button class="eat uk-button uk-button-danger" data-id="{{this.id}}">Eat</button>
         </p>
     {{/unless}}
 {{/each}}
 ```
-### ORM
-Learning about ORM was another goal of this project. ORM allows us to query and manipulate data from a database. There are many prebuilt ORM tools already created, but for this project, I created my own.
-
-This is a little snippet of the ORM I created. This code allows you to select everything from the database and what you do with the data is up to you.
+### Sequelize
+We are using Sequelize instead of creating our own ORM. Sequelize has a lot of prebuilt functions that allow us to access data from a MySql database. I create a Burger model here using Sequelize so that this Burger model can call on Sequelize functions.
 ```js
-var orm = {
-    selectAll: function (table, cb) {
-        var queryString = "SELECT * FROM " + table + ";";
-        connection.query(queryString, function (err, result) {
-            if (err) {
-                throw err;
+module.exports = function (sequelize, DataTypes) {
+    var Burger = sequelize.define("Burger", {
+        burger_name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1, 160]
             }
-            cb(result);
-        });
+        },
+        devoured: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }
+    }, {
+        createdAt: false,
+        updatedAt: false
+    });
+
+    Burger.associate = function (models) {
+        Burger.belongsTo(models.Person, {
+            foreignKey: {
+                allowNull: true
+            }
+        })
     }
-};
+    return Burger;
+}
 ```
-I chose to display all the data onto the page with these lines of code.
+findAll() is one of the Sequelize functions. It allows me to display all burgers onto the page with the following lines of code.
 ```js
 router.get("/", function (req, res) {
-    burger.selectAll(function (data) {
-        var burgerObj = {
-            burgers: data
-        };
-        res.render("index", burgerObj);
-    })
+    db.Burger.findAll({
+            include: [db.Person]
+        })
+        .then(function (data) {
+            var burgerObj = {
+                burgers: data
+            }
+            res.render("index", burgerObj);
+        })
 })
 ```
 ## Other Learning Points
@@ -75,7 +96,14 @@ In order to have everything more modular, we separated all code into their own f
 module.exports = burger;
 var burger = require("../burger.js")
 ```
-This is also the first time I used JawsDB for deployment on Heroku. Now everything is tied together. We have a backend server with database, and a front end to display the data.
+This is also the first time I used JawsDB for deployment on Heroku. This section in the config file tells the server to use the JawsDB information.
+```js
+"production": {
+    "use_env_variable": "JAWSDB_URL",
+    "dialect": "mysql"
+}
+```
+Now everything is tied together. We have a backend server with database, and a front end to display the data.
 
 ## Author
 [Bryan Liang](https://github.com/liangbryan2)
